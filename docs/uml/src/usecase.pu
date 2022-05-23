@@ -1,0 +1,44 @@
+@startuml
+
+title Usecases for fllow
+
+'Left to right direction
+
+:User:
+(Log on to Windows fluently) as Logon
+(Launch several apps fluently) as Launch
+User --> Logon
+User --> Launch
+
+(Launch specific apps sequentially) as LaunchSequentially
+Logon <|-- LaunchSequentially
+Launch <|-- LaunchSequentially
+
+(Launch an app if CPU usage is enough less) as LaunchIfCPUUsage
+(Launch an app if CPU seems too busy) as LaunchIfTooBusy
+(Configure)
+LaunchSequentially --> LaunchIfCPUUsage : <<include>>
+LaunchSequentially --> LaunchIfTooBusy : <<include>>
+LaunchSequentially --> Configure : <<include>>
+
+(Notify CPU usage is enouch less) as CPUUsage
+(Launch an app) as LaunchApp
+LaunchIfCPUUsage --> CPUUsage : <<include>>
+LaunchIfCPUUsage --> LaunchApp : <<include>>
+
+(Timeout)
+LaunchIfTooBusy --> Timeout : <<include>>
+LaunchIfTooBusy --> LaunchApp : <<include>>
+
+(Configure apps to launch) as ConfigureApps
+(Configure settings) as ConfigureSettings
+Configure --> ConfigureApps : <<include>>
+Configure --> ConfigureSettings : <<include>>
+
+(Configure apps with GUI) as ConfigureAppsGUI
+ConfigureApps <|-- ConfigureAppsGUI
+
+(Configure apps with Explorer) as ConfigureAppsWithExplorer
+ConfigureAppsGUI <|-- ConfigureAppsWithExplorer
+
+@enduml
