@@ -1,0 +1,30 @@
+@startuml
+
+[ApplicationLogic]
+[CpuUsageWatcher]
+[TimeoutNotifier]
+[ApplicationLauncher]
+[SequentialLauncher]
+[ConfigurationBuilder]
+[ConfigurationReader]
+[ApplicationLaunchConfiguration]
+[ApplicationEnumerator]
+folder "Configuration folder" {
+  [Configuration file] as ConfigurationFile
+  [Shortcuts]
+}
+
+ApplicationLogic --> SequentialLauncher
+ApplicationLogic --> ConfigurationBuilder
+ApplicationLogic ---> ApplicationLaunchConfiguration
+ConfigurationBuilder --> ApplicationLaunchConfiguration
+ConfigurationBuilder --> ConfigurationReader
+ConfigurationReader --> ConfigurationFile
+ConfigurationBuilder --> ApplicationEnumerator
+ApplicationEnumerator --> Shortcuts
+SequentialLauncher --> CpuUsageWatcher
+SequentialLauncher --> TimeoutNotifier
+SequentialLauncher --> ApplicationLauncher
+SequentialLauncher --> ApplicationLaunchConfiguration
+
+@enduml
