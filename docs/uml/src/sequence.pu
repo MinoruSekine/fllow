@@ -1,0 +1,67 @@
+@startuml
+
+actor User
+participant FllowApplication
+participant FllowModel
+participant ConfigurationBuilder
+participant ConfigurationReader
+participant ShortcutsEnumerator
+participant ApplicationLaunchConfiguration
+participant SequentialLauncher
+participant CpuUsageWatcher
+participant TimeoutNotifier
+participant ApplicationLauncher
+
+autoactivate on
+
+create FllowApplication
+User -> FllowApplication
+
+FllowApplication -> FllowModel : LaunchByConfig()
+FllowModel -> ConfigurationBuilder : BuildApplicationLaunchConfig()
+ConfigurationBuilder -> ConfigurationReader : ReadConfig()
+return
+ConfigurationBuilder -> ShortcutsEnumerator : EnumShortcuts()
+return
+loop Number of shortcuts
+create ApplicationLaunchConfiguration
+ConfigurationBuilder -> ApplicationLaunchConfiguration : build configuration for each shortcut
+return
+end
+return
+
+FllowModel -> SequentialLauncher : LaunchSequentially(ApplicationLaunchConfiguration)
+loop Number of shortcuts
+SequentialLauncher -> CpuUsageWatcher : Start(threshold)
+return
+SequentialLauncher -> TimeoutNotifier : Start(timeout)
+return
+...CPU Usage under threshold or Timeout...
+opt CPU Usage under threshold
+CpuUsageWatcher -> SequentialLauncher : OnCpuUsageUnder(threshold, current)
+SequentialLauncher -> CpuUsageWatcher : Stop()
+return
+SequentialLauncher -> TimeoutNotifier : Stop()
+return
+SequentialLauncher -> ApplicationLauncher : Launch(shortcut)
+return
+return
+end
+opt Timeout
+TimeoutNotifier -> SequentialLauncher : OnTimeout()
+SequentialLauncher -> CpuUsageWatcher : Stop()
+return
+SequentialLauncher -> TimeoutNotifier : Stop()
+return
+SequentialLauncher -> ApplicationLauncher : Launch(shortcut)
+return
+return
+end
+end
+return
+
+return
+
+return
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+title fflow class diagram
+
+class FllowApplication
+class FllowModel
+class SequentialLauncher
+class CpuUsageWatcher
+interface CpuUsageObserverInterface
+class TimeoutNotifier
+interface TimeoutObserverInterface
+class ApplicationLauncher
+class ConfigurationBuilder
+class ApplicationLaunchConfiguration
+class ConfigurationReader
+class ShortcutsEnumerator
+
+FllowApplication o-- FllowModel
+
+FllowModel o-- SequentialLauncher
+FllowModel o-- ConfigurationBuilder
+
+CpuUsageObserverInterface <--- CpuUsageWatcher
+
+TimeoutObserverInterface <--- TimeoutNotifier
+
+CpuUsageObserverInterface <|-- SequentialLauncher
+SequentialLauncher o-- CpuUsageWatcher
+TimeoutObserverInterface <|-- SequentialLauncher
+SequentialLauncher o-- TimeoutNotifier
+SequentialLauncher o-- ApplicationLauncher
+SequentialLauncher "1" o--- "1..*" ApplicationLaunchConfiguration
+
+ConfigurationBuilder o-- ConfigurationReader
+ConfigurationReader --> ApplicationLaunchConfiguration
+ConfigurationBuilder o-- ShortcutsEnumerator
+
+@enduml
