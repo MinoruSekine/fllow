@@ -1,5 +1,7 @@
 @startuml
 
+title fflow components diagram
+
 [ApplicationLogic]
 [CpuUsageWatcher]
 [TimeoutNotifier]
