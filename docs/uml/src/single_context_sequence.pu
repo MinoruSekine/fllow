@@ -1,0 +1,52 @@
+@startuml
+
+actor User
+participant FllowApplication
+participant FllowModel
+participant SequentialLauncher
+participant CpuUsageWatcher
+participant TimeoutChecker
+participant ApplicationLauncher
+participant ApplicationLaunchConfiguration
+participant ConfigurationBuilder
+participant ConfigurationReader
+participant ShortcutsEnumerator
+
+autoactivate on
+
+create FllowApplication
+User -> FllowApplication
+
+FllowApplication -> FllowModel : LaunchByConfig()
+FllowModel -> ConfigurationBuilder : BuildApplicationLaunchConfig()
+ConfigurationBuilder -> ConfigurationReader : ReadConfig()
+return Configuration
+ConfigurationBuilder -> ShortcutsEnumerator : EnumShortcuts()
+return shortcuts
+loop Number of shortcuts
+create ApplicationLaunchConfiguration
+ConfigurationBuilder -> ApplicationLaunchConfiguration : build configuration for each shortcut
+return
+end
+return applicationLaunchConfigurations
+
+FllowModel -> SequentialLauncher : LaunchSequentially(ApplicationLaunchConfiguration)
+loop Number of shortcuts
+SequentialLauncher -> TimeoutChecker : Start(timeout)
+return
+loop not timeout_checker->HasBeenTimeout()
+SequentialLauncher -> CpuUsageWatcher : GetCurrentCpuUsage()
+return cpu_usage
+break cpu_usage < threshold
+end
+end
+SequentialLauncher -> ApplicationLauncher : InvokeShortcut()
+return
+end
+return
+
+return
+
+return
+
+@enduml

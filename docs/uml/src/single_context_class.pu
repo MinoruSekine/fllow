@@ -1,0 +1,47 @@
+@startuml
+
+title fflow class diagram
+
+class FllowApplication
+class FllowModel {
+  +Run()
+}
+class SequentialLauncher {
+  +Run(ApplicationLaunchConfiguration configruations)
+}
+class CpuUsageWatcher {
+  +float GetCurrentCpuUsage()
+}
+class TimeoutChecker {
+  +Start(Time timeout_duration)
+  +bool HasBeenTimeout()
+}
+class ApplicationLauncher {
+  +InvokeShortcut(String shortcut_path)
+}
+class ConfigurationBuilder {
+  +array<ApplicationLaunchConfiguration> BuildConfigurations()
+}
+class ApplicationLaunchConfiguration
+class ConfigurationReader {
+  +Configuration ReadConfiguration()
+}
+class ShortcutsEnumerator {
+  + array<String> EnumerateShortcuts(shortcuts_directory_path)
+}
+
+FllowApplication o-- FllowModel
+
+FllowModel o-- SequentialLauncher
+FllowModel o-- ConfigurationBuilder
+
+SequentialLauncher o-- CpuUsageWatcher
+SequentialLauncher o-- TimeoutChecker
+SequentialLauncher o-- ApplicationLauncher
+SequentialLauncher "1" o--- "1..*" ApplicationLaunchConfiguration
+
+ConfigurationBuilder o-- ConfigurationReader
+ConfigurationBuilder --> ApplicationLaunchConfiguration
+ConfigurationBuilder o-- ShortcutsEnumerator
+
+@enduml
