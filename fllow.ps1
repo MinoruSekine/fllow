@@ -1,6 +1,6 @@
 class ShortcutsEnumerator {
     [String[]]EnumerateShortcuts([String]$EnumRootPath) {
-	return (Get-ChildItem -Path $EnumRootPath | where {$_.extension -eq ".lnk"}).FullName
+	return (Get-ChildItem -Path $EnumRootPath | Where-Object {$_.extension -eq ".lnk"}).FullName
     }
 }
 
@@ -18,7 +18,7 @@ class ApplicationLaunchConfiguration {
 
 class CpuUsageWatcher {
     [Float]GetCurrentCpuUsage() {
-	return [Float](Get-WmiObject Win32_Processor).LoadPercentage / 100.0
+	return [Float]((Get-CimInstance -ClassName Win32_Processor).LoadPercentage) / 100.0
     }
 }
 
