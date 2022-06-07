@@ -12,7 +12,15 @@ class ApplicationLaunchConfiguration {
     ApplicationLaunchConfiguration([String]$ShortcutPath) {
 	$this.ShortcutPath = $ShortcutPath
 	$this.TimeoutDuration = New-TimeSpan -Seconds 90
-	$this.CpuUsageThreshold = 0.5
+	$this.CpuUsageThreshold = $this.GetDefaultCpuUsageThreshold()
+    }
+
+    [Float]GetDefaultCpuUsageThreshold() {
+	[Float]$threshold = 1.0 - 1.0 / ((Get-CimInstance -ClassName Win32_Processor).NumberOfLogicalProcessors)
+	if ($threshold -le 0.0 -Or $threshold -ge 1.0) {
+	    $threshold = 0.75  # Fallback default value for unexepected num of cores.
+	}
+	return $threshold
     }
 }
 
@@ -63,7 +71,8 @@ class FluentLauncher {
 		$cpuUsageCheckIntervalSec = 0.5
 		Start-Sleep -Seconds $cpuUsageCheckIntervalSec
 		$cpuUsageWatcher = [CpuUsageWatcher]::new()
-	        if($cpuUsageWatcher.GetCurrentCpuUsage() -le $applicationLaunchConfiguration.CpuUsageThreshold) {
+		$currentCpuUsage = $cpuUsageWatcher.GetCurrentCpuUsage()
+	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
 		    break
 		}
 	    }
