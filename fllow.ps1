@@ -71,7 +71,8 @@ class FluentLauncher {
 		$cpuUsageCheckIntervalSec = 0.5
 		Start-Sleep -Seconds $cpuUsageCheckIntervalSec
 		$cpuUsageWatcher = [CpuUsageWatcher]::new()
-	        if($cpuUsageWatcher.GetCurrentCpuUsage() -le $applicationLaunchConfiguration.CpuUsageThreshold) {
+		$currentCpuUsage = $cpuUsageWatcher.GetCurrentCpuUsage()
+	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
 		    break
 		}
 	    }
