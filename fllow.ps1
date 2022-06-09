@@ -1,6 +1,6 @@
 class ShortcutsEnumerator {
     [String[]]EnumerateShortcuts([String]$EnumRootPath) {
-	return (Get-ChildItem -Path $EnumRootPath | Where-Object {$_.extension -eq ".lnk"}).FullName
+	return (Get-ChildItem -Path $EnumRootPath | Where-Object {$_.extension -eq ".lnk"}).FullName | Sort-Object
     }
 }
 
