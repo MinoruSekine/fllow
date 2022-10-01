@@ -1,3 +1,6 @@
+[CmdletBinding()]
+param()
+
 class ShortcutsEnumerator {
     [String[]]EnumerateShortcuts([String]$EnumRootPath) {
 	return (Get-ChildItem -Path $EnumRootPath | Where-Object {$_.extension -eq ".lnk"}).FullName | Sort-Object
@@ -75,6 +78,7 @@ class FluentLauncher {
 	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
 		    break
 		}
+		Write-Verbose "$($applicationLaunchConfiguration.ShortcutPath) is waiting for CPU idle (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
 	    }
 	    $applicationLauncher = [ApplicationLauncher]::new()
 	    $applicationLauncher.InvokeShortcut($applicationLaunchConfiguration.ShortcutPath)
