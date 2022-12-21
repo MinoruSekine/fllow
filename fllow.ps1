@@ -74,7 +74,7 @@ class FluentLauncher {
 	    $timeoutChecker = [TimeoutChecker]::new()
 	    $timeoutChecker.Start($applicationLaunchConfiguration.TimeoutDuration)
 	    while(-not $timeoutChecker.HasBeenTimeout()) {
-		$cpuUsageCheckIntervalSec = 0.5
+		$cpuUsageCheckIntervalSec = 0.6
 		Start-Sleep -Seconds $cpuUsageCheckIntervalSec
 		if (($null -ne $intervalChecker) -And (-not $intervalChecker.HasBeenTimeout())) {
 		    Write-Verbose "Waiting for minimum launch interval"
