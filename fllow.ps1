@@ -76,9 +76,13 @@ class FluentLauncher {
 		$cpuUsageWatcher = [CpuUsageWatcher]::new()
 		$currentCpuUsage = $cpuUsageWatcher.GetCurrentCpuUsage()
 	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
+		    Write-Verbose "Launching $($applicationLaunchConfiguration.ShortcutPath) (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
 		    break
 		}
 		Write-Verbose "$($applicationLaunchConfiguration.ShortcutPath) is waiting for CPU idle (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
+	    }
+	    if ($timeoutChecker.HasBeenTimeout()) {
+		Write-Verbose "$($applicationLaunchConfiguration.ShortcutPath) timeout exceeded ($($applicationLaunchConfiguration.TimeoutDuration))"
 	    }
 	    $applicationLauncher = [ApplicationLauncher]::new()
 	    $applicationLauncher.InvokeShortcut($applicationLaunchConfiguration.ShortcutPath)
