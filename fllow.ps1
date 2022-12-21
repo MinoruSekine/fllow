@@ -11,11 +11,13 @@ class ApplicationLaunchConfiguration {
     [String]$ShortcutPath
     [TimeSpan]$TimeoutDuration
     [Float]$CpuUsageThreshold
+    [TimeSpan]$WaitForNextLaunch
 
     ApplicationLaunchConfiguration([String]$ShortcutPath) {
 	$this.ShortcutPath = $ShortcutPath
 	$this.TimeoutDuration = New-TimeSpan -Seconds 90
 	$this.CpuUsageThreshold = $this.GetDefaultCpuUsageThreshold()
+	$this.WaitForNextLaunch = New-TimeSpan -Seconds 1
     }
 
     [Float]GetDefaultCpuUsageThreshold() {
@@ -67,12 +69,17 @@ class ApplicationLauncher {
 
 class FluentLauncher {
     [Void]LaunchFluently([ApplicationLaunchConfiguration[]]$ApplicationLaunchConfigurations) {
+	$intervalChecker = $null
 	foreach($applicationLaunchConfiguration in $ApplicationLaunchConfigurations) {
 	    $timeoutChecker = [TimeoutChecker]::new()
 	    $timeoutChecker.Start($applicationLaunchConfiguration.TimeoutDuration)
 	    while(-not $timeoutChecker.HasBeenTimeout()) {
 		$cpuUsageCheckIntervalSec = 0.5
 		Start-Sleep -Seconds $cpuUsageCheckIntervalSec
+		if (($null -ne $intervalChecker) -And (-not $intervalChecker.HasBeenTimeout())) {
+		    Write-Verbose "Waiting for minimum launch interval"
+		    continue
+		}
 		$cpuUsageWatcher = [CpuUsageWatcher]::new()
 		$currentCpuUsage = $cpuUsageWatcher.GetCurrentCpuUsage()
 	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
@@ -86,6 +93,8 @@ class FluentLauncher {
 	    }
 	    $applicationLauncher = [ApplicationLauncher]::new()
 	    $applicationLauncher.InvokeShortcut($applicationLaunchConfiguration.ShortcutPath)
+	    $intervalChecker = [TimeoutChecker]::new()
+	    $intervalChecker.Start($applicationLaunchConfiguration.WaitForNextLaunch)
 	}
     }
 }
