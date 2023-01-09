@@ -15,9 +15,9 @@ class ApplicationLaunchConfiguration {
 
     ApplicationLaunchConfiguration([String]$ShortcutPath) {
 	$this.ShortcutPath = $ShortcutPath
-	$this.TimeoutDuration = New-TimeSpan -Seconds 90
+	$this.TimeoutDuration = New-TimeSpan -Seconds 180
 	$this.CpuUsageThreshold = $this.GetDefaultCpuUsageThreshold()
-	$this.WaitForNextLaunch = New-TimeSpan -Seconds 1
+	$this.WaitForNextLaunch = New-TimeSpan -Seconds 3
     }
 
     [Float]GetDefaultCpuUsageThreshold() {
