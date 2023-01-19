@@ -77,13 +77,13 @@ class FluentLauncher {
 		$cpuUsageCheckIntervalSec = 0.6
 		Start-Sleep -Seconds $cpuUsageCheckIntervalSec
 		if (($null -ne $intervalChecker) -And (-not $intervalChecker.HasBeenTimeout())) {
-		    Write-Verbose "Waiting for minimum launch interval"
+		    Write-Verbose "$((Get-Date).ToString()) Waiting for minimum launch interval"
 		    continue
 		}
 		$cpuUsageWatcher = [CpuUsageWatcher]::new()
 		$currentCpuUsage = $cpuUsageWatcher.GetCurrentCpuUsage()
 	        if($currentCpuUsage -le $applicationLaunchConfiguration.CpuUsageThreshold) {
-		    Write-Verbose "Launching $($applicationLaunchConfiguration.ShortcutPath) (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
+		    Write-Verbose "$((Get-Date).ToString()) Launching $($applicationLaunchConfiguration.ShortcutPath) (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
 		    break
 		}
 		Write-Verbose "$($applicationLaunchConfiguration.ShortcutPath) is waiting for CPU idle (now: ${currentCpuUsage}, target: $($applicationLaunchConfiguration.CpuUsageThreshold))"
