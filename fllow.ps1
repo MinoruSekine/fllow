@@ -20,8 +20,20 @@ class ApplicationLaunchConfiguration {
 	$this.WaitForNextLaunch = New-TimeSpan -Seconds 4
     }
 
+    [UInt32]GetNumOfIdleCoresToLaunchNext([UInt32]$NumOfLocicalProcessors) {
+	[UInt32]$NumOfIdleCoresToLaunchNext = [math]::log($NumOfLocicalProcessors, 2)
+	if ($NumOfIdleCoresToLaunchNext -le 2) {
+	    $NumOfIdleCoresToLaunchNext = 1
+	} else {
+	    $NumOfIdleCoresToLaunchNext -= 1
+	}
+	return $NumOfIdleCoresToLaunchNext
+    }
+
     [Float]GetDefaultCpuUsageThreshold() {
-	[Float]$threshold = 1.0 - 1.0 / ((Get-CimInstance -ClassName Win32_Processor).NumberOfLogicalProcessors)
+	[UInt32]$NumOfCores = ((Get-CimInstance -ClassName Win32_Processor).NumberOfLogicalProcessors)
+	[UInt32]$NumOfCoresForIdle = $this.GetNumOfIdleCoresToLaunchNext($NumOfCores)
+	[Float]$threshold = (1.0 - (([Float]$NumOfCoresForIdle) / $NumOfCores))
 	if ($threshold -le 0.0 -Or $threshold -ge 1.0) {
 	    $threshold = 0.75  # Fallback default value for unexepected num of cores.
 	}
