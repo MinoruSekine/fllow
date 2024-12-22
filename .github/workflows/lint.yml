@@ -3,20 +3,20 @@ name: lint
 on:
   pull_request:
   schedule:
-    - cron:  0 20 * * 0
+    - cron: 0 20 * * 0
 
 jobs:
   lint:
     runs-on: windows-latest
 
     steps:
-    - name: Check out
-      uses: actions/checkout@v2
+      - name: Check out
+        uses: actions/checkout@v2
 
-    - name: Install PSScriptAnalyzer
-      run: Install-Module -Name PSScriptAnalyzer -Force
-      shell: pwsh
+      - name: Install PSScriptAnalyzer
+        run: Install-Module -Name PSScriptAnalyzer -Force
+        shell: pwsh
 
-    - name: Check syntax of PowerShell script
-      run: Invoke-ScriptAnalyzer -Path .\ -Recurse -EnableExit
-      shell: pwsh
+      - name: Check syntax of PowerShell script
+        run: Invoke-ScriptAnalyzer -Path .\ -Recurse -EnableExit
+        shell: pwsh
