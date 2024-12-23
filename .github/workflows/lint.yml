@@ -6,7 +6,7 @@ on:
     - cron: 0 20 * * 0
 
 jobs:
-  lint:
+  PSScriptAnalyzer:
     runs-on: windows-latest
 
     steps:
