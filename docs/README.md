@@ -23,6 +23,34 @@ to put application shortcuts into `01_shortcuts`
 instead of your startup folder and
 register `fllow.ps1` to your startup folder.
 
+Applications will be launched in num-alphabetical order
+by shortcuts' name.
+
+## Tips
+
+### Control launch order absolutely and easily
+
+Add numerical prefix like as `00_` to shortcuts' name.
+Application which has least number in its prefix
+will be launched at first,
+and application which has most number in its prefix
+will be launched at last.
+
+Applications will be launched in num-alphabetical order
+by shortcuts' name.
+So numerical prefix in shortcuts' name
+can control launch order perfectly.
+
+#### Example
+
+- `00_MicrosoftTeams.lnk`
+- `01_Outlook.lnk`
+- `02_Chrome.lnk`
+
+In this example, Teams will be launched at first,
+Outlook will be launched next,
+and Chrome will be launched at last.
+
 ## License
 
 Distributed under GNU Affero General Public License version 3.
